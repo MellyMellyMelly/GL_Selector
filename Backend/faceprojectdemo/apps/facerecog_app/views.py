@@ -12,55 +12,6 @@ import requests
 import datetime
 from django.http.response import JsonResponse
 from pathlib import Path
-# from os.path import realpath, normpath
-
-session = {
-    'id': 0,
-}
-
-def check(request):
-    if session['id'] > 0:
-        print('Already logged in')
-        user = User.objects.get(id = session['id'])
-        created = user.created_at.strftime("%B")+' '+str(user.created_at.year)
-        context = {
-            'logged_in': True,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-            'email': user.email,
-            'created': created
-        }
-        # jacob = User.objects.create(first_name=context['first_name'],last_name=context['last_name'],email='dragon@dragon.com',password=password).id
-    else:
-        print('Please log in')
-        context = {
-            'logged_in': False
-        }
-    return HttpResponse(json.dumps(context), content_type="application/json")
-
-def register(request):
-    print("Register")
-    body = json.loads(request.body.decode('utf-8'))
-    print(body)
-    errors = User.objects.basic_validator(body)
-    if len(errors):
-        return HttpResponse(json.dumps(errors), content_type="application/json")
-    else:
-        if body['precheck'] == True:
-            context = {
-                'precheck': True
-            }
-            print("You are ready to register")
-            return HttpResponse(json.dumps(context), content_type="application/json")
-        password = bcrypt.hashpw(body['password'].encode(), bcrypt.gensalt()).decode()
-        User.objects.create(first_name = body['first_name'], last_name = body['last_name'], email = body['email'], password = password)
-        session['id'] = User.objects.get(email = body['email']).id
-        session['time'] = datetime.datetime.now()
-        context = {
-            'success': 'success'
-        }
-        print("success")
-        return HttpResponse(json.dumps(context), content_type="application/json")
 
 def capture(request):
     body = json.loads(request.body.decode('utf-8'))
@@ -215,36 +166,55 @@ def capture(request):
             }
         # return requests.post('http:local:4200/', context)
         return HttpResponse(json.dumps(context_before), content_type="application/json")
-        
-def login(request):
-    print("Login")
-    print(request.body)
+
+def retrieve(request):
     body = json.loads(request.body.decode('utf-8'))
-    print(type(body))
-    errors = User.objects.login_validator(body)
+    user = User.objects.get(id=body)
+    creation = str(user.created_at.strftime("%B")) + ' ' + str(user.created_at.year)
+    trial = []
+    for mug in Face.objects.filter(user=user):
+        trial.append(Face.objects.Jsonize(i))
+    context = {
+        'first_name': user.first_name,
+        'last_name':  user.last_name,
+        'email':  user.email,
+        'created': creation,
+        'faces': trial,
+    }
+    return HttpResponse(json.dumps(context), content_type="application/json")
+
+def register(request):
+    body = json.loads(request.body.decode('utf-8'))
+    errors = User.objects.basic_validator(body)
     if len(errors):
         print(errors)
         return HttpResponse(json.dumps(errors), content_type="application/json")
     else:
-        session = User.objects.get(email = body['email'])
-        creation = str(session.created_at.strftime("%B")) + ' ' + str(session.created_at.year)
-        print(creation)
-        context_before = {
-                # 'shapes': Face.objects.filter(user = User.objects.get(id = user_id)).shape,
-                # 'images': Face.objects.filter(user = User.objects.get(id = user_id)).image,
-                'success': 'success',
-                'id':  session.id,
-                'first_name': session.first_name,
-                'last_name':  session.last_name,
-                'email':  session.email,
-                'created':  creation,
+        if body['precheck'] == True:
+            context = {
+                'precheck': True
             }
+            return HttpResponse(json.dumps(context), content_type="application/json")
+        password = bcrypt.hashpw(body['password'].encode(), bcrypt.gensalt()).decode()
+        # face = Face.objects.create()
+        User.objects.create(first_name = body['first_name'], last_name = body['last_name'], email = body['email'], password = password)
+        session['id'] = User.objects.get(email = body['email']).id
+        session['time'] = datetime.datetime.now()
+        context = {
+            'success': 'success'
+        }
         print("success")
+        return HttpResponse(json.dumps(context), content_type="application/json")
+        
+def login(request):
+    body = json.loads(request.body.decode('utf-8'))
+    errors = User.objects.login_validator(body)
+    if len(errors):
+        return HttpResponse(json.dumps(errors), content_type="application/json")
+    else:
+        user = User.objects.get(email=body['email'])
+        context_before = {
+                'success': 'success',
+                'id': user.id,
+            }
         return HttpResponse(json.dumps(context_before), content_type="application/json")
-
-def logout(request):
-    session['id'] = 0
-    logged_out = {
-        "logged_in": False
-    }
-    return HttpResponse(json.dumps(logged_out), content_type="application/json")

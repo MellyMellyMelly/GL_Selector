@@ -23,10 +23,25 @@ class UserManager(models.Manager):
     def login_validator(self, postData):
         errors = {}
         if len(User.objects.filter(email = postData['email'])) == 0:
-            errors["email"] = "Invalid Login Email"
+            errors["success"] = "Invalid Login"
         elif not bcrypt.checkpw(postData['password'].encode(), User.objects.get(email = postData['email']).password.encode()):
-            errors["password"] = "Invalid Login Password"
+            errors["success"] = "Invalid Login"
         return errors
+    def Jsonize(self, trial):
+        user = {}
+        user['first_name'] = trial.first_name
+        user['last_name'] = trial.last_name
+        return user
+
+class FaceManager(models.Manager):
+    def Jsonize(self, trial):
+        face = {}
+        face['chin_angle'] = trial.chin_angle
+        face['mofa_ratio'] = trial.mofa_ratio
+        face['hlmo_angle'] = trial.hlmo_angle
+        face['shape'] = trial.shape
+        face['image'] = trial.image
+        return face
         
 class User(models.Model):
     first_name = models.CharField(max_length=200)
@@ -48,5 +63,6 @@ class Face(models.Model):
     user = models.ForeignKey(User, related_name = "faces", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    objects = FaceManager()
     def __repr__(self):
         return "<Face object: {} {} {} {} {} {}>".format(self.chin_angle, self.mofa_ratio, self.hlmo_angle, self.shape, self.image, self.user)

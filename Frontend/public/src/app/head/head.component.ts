@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpService } from '../http.service';
 declare var $: any;
 declare var AOS: any;
 
@@ -14,21 +13,25 @@ export class HeadComponent implements OnInit {
   errors = null;
   face_shape = null;
   Object = Object;
+  show: boolean;
+  send: boolean;
   res_img = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 
-  constructor(private _httpService: HttpService) { }
+  constructor() { }
 
   ngOnInit() {
-    let show = false;
+    this.show = true;
+    this.send = false;
     $('.body').hide();
     $('#demo').click(function () {
+      console.log('Take Care');
       const rate = 700;
-      if (!show) {
+      if (!this.show) {
         $('.body').slideDown(rate);
       } else {
         $('.body').slideUp(rate);
       }
-      show = !show;
+      this.show = !this.show;
     });
   }
 }

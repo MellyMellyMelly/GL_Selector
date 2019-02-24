@@ -82,3 +82,8 @@ cursor:pointer;
     outline:none;
     border-radius:15px;
 }
+
+.error{
+    color: red;
+    font-size: 25px;
+}

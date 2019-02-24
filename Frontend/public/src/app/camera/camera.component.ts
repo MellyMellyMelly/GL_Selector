@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { HttpService } from '../http.service';
-import { Router } from '@angular/router';
 declare var $: any;
 declare var AOS: any;
 
@@ -9,20 +8,27 @@ declare var AOS: any;
   templateUrl: './camera.component.html',
   styleUrls: ['./camera.component.css']
 })
-export class CameraComponent implements OnInit {
+export class CameraComponent implements OnInit, OnDestroy {
+
+  @Input() send: boolean;
+
   play = false;
   src_img: string;
   errors = null;
   face_shape = null;
   Object = Object;
   res_img: string;
-  lebron = 0;
 
-  constructor(private _httpService: HttpService, private _redirect: Router) { }
+  constructor(private _httpService: HttpService) { }
 
   ngOnInit() {
-    console.log('Eric Cartman');
     AOS.init();
+    console.log('Naked ice cream');
+    console.log(this.send);
+    if (this.send === true) {
+      console.log('Barbershop');
+    }
+    console.log('Sicko Mode');
     const self = this;
     $('#take-picture').hide();
     $('#send').hide();
@@ -81,24 +87,31 @@ export class CameraComponent implements OnInit {
     let canvas: any;
     $('#take-picture').on('click', function(ev) {
       ev.preventDefault();
-      console.log('Fuck Tyler');
+      $('#keep').hide();
     });
     $('#send').on('click', function(ev) {
+      console.log('SES');
       ev.preventDefault();
-      console.log('I hate this');
       self.sendImageFromService();
     });
+    $('#keep').on('click', function(ev) {
+      console.log('Fairly Odd Parents');
+    });
     $('.fart').modal('attach events', '#close', 'hide');
+    $('.fart').on('click', () => {
+      if ((this.errors === null) && (this.send === true)) {
+        console.log('Earl');
+        $('#keep').show();
+      } else {
+        console.log('Verlander');
+        $('#keep').hide();
+      }
+    });
     $('.fart').modal('attach events', '#send', 'show');
-    $('#send').click(function () {
-    });
-    $('#close').click(function () {
-    });
   }
 
   sendImageFromService() {
     const newstr = this.src_img.substring(22);
-    console.log('cudder');
     const tempObservable = this._httpService.sendImage({demo: true, img_data: newstr});
     tempObservable.subscribe((res: any) => {
       // console.log('this is the error', res.error);
@@ -119,8 +132,7 @@ export class CameraComponent implements OnInit {
     });
   }
 
-  TestFunction() {
-    this.lebron += 1000;
-    console.log(this.lebron);
+  ngOnDestroy() {
+    $('.fart').remove();
   }
 }

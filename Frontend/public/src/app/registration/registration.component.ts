@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpService } from '../http.service';
-import {ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 declare var $: any;
-declare var AOS: any;
 
 
 @Component({
@@ -12,15 +11,18 @@ declare var AOS: any;
 })
 export class RegistrationComponent implements OnInit {
   newUser: object = {first_name: '', last_name: '', email: '', password: '', confirm: '', precheck: true };
+  send: boolean;
   constructor( private _httpService: HttpService , private _redirect: Router ) { }
 
   ngOnInit() {
+    const observable = this._httpService.check();
+    observable.subscribe(data => {
+      if (data['token'] > 0) {
+        this._redirect.navigate(['/dashboard']);
+      }
+    });
+    this.send = true;
     const self = this;
-    console.log('Michael Strahan');
-    if (this._httpService.Session.id > 0) {
-      console.log(this._httpService.Session);
-      this._redirect.navigate(['/dashboard']);
-    }
     let section = false;
     $('.next1').on('click', function(ev) {
       ev.preventDefault();

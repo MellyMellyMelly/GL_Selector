@@ -12,26 +12,34 @@ declare var AOS: any;
 })
 export class DashboardComponent implements OnInit {
   User: object = { first_name: '', last_name: '', email: '', created: '' };
+  send: boolean;
   constructor( private _httpService: HttpService , private _redirect: Router , private _route: ActivatedRoute ) { }
 
   ngOnInit() {
-    if (this._httpService.Session.id === 0) {
-      this._redirect.navigate(['/login']);
-    }
-    this.User = this._httpService.Session;
+    const observable = this._httpService.check();
+    observable.subscribe(data => {
+      if (data['token'] === 0) {
+        this._redirect.navigate(['/login']);
+      } else {
+        this.send = true;
+        const retrieve = this._httpService.retrieve(data['token']);
+        retrieve.subscribe((letter) => {
+          this.User = letter;
+          console.log(letter);
+        });
+      }
+    });
     $('.camera').css('display', 'none');
     $('.newpic').on('click', function(ev) {
       ev.preventDefault();
         $('#main').fadeOut(400, function() {
-          console.log('You a real wavy dude');
           $('.camera').fadeIn(400, function() {
         });
       });
     });
     $('#back').on('click', function(ev) {
       ev.preventDefault();
-        $('.camera').fadeOut(400, function() {
-          console.log('Earl Sweatshirt');
+      $('.camera').fadeOut(400, function() {
         $('#main').fadeIn(400, function() {
         });
       });
@@ -40,8 +48,11 @@ export class DashboardComponent implements OnInit {
   }
 
   Logout() {
-    this._httpService.logout();
-    this._redirect.navigate(['/login']);
+    const observable = this._httpService.logout();
+    observable.subscribe((data) => {
+      console.log(data);
+      this._redirect.navigate(['/login']);
+    });
   }
 
 }

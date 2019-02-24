@@ -11,18 +11,17 @@ export class HttpService {
 
   }
 
-  Session = {id: 0, first_name: '', last_name: '', email: '', created: '' };
+  retrieve(token) {
+    return this._http.post('http://localhost:8000/retrieve', token);
+  }
 
   logout() {
-    this.Session.id = 0;
-    this.Session.first_name = '';
-    this.Session.last_name = '';
-    this.Session.email = '';
-    this.Session.created = '';
+    console.log('Baby boy');
+    return this._http.delete('/session');
   }
 
   check() {
-    console.log(this.Session);
+    return this._http.get('/session');
   }
 
   createUser(userObj) {
@@ -33,6 +32,10 @@ export class HttpService {
   loginUser(userObj) {
     console.log('in server loginUser', userObj);
     return this._http.post('http://localhost:8000/login', userObj);
+  }
+
+  loginPost(token) {
+    return this._http.post('/session', {token: token});
   }
 
   sendImage(imgObject) {
