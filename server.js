@@ -28,6 +28,7 @@ app.post('/session', function(req,res){
     res.json({token: req.session.token})
 })
 app.delete('/session', function(req,res){
+    console.log('Gunna')
     delete req.session.token;
     res.json({token: 0})
 })

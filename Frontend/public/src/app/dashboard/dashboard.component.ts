@@ -17,20 +17,6 @@ export class DashboardComponent implements OnInit {
   constructor( private _httpService: HttpService , private _redirect: Router ) { }
 
   ngOnInit() {
-    this.activity = 0;
-    const self = this;
-    const timing = 10000;
-    function TimeLogout(check) {
-      console.log('Giraffe');
-      if (check === self.activity) {
-        const morty = self._httpService.loginPost(-1);
-        morty.subscribe(() => {
-          self._redirect.navigate(['/login']);
-        });
-      } else {
-        console.log('Addison');
-      }
-    }
     const observable = this._httpService.check();
     observable.subscribe(data => {
       if (data['token'] < 1) {
@@ -44,7 +30,20 @@ export class DashboardComponent implements OnInit {
         });
       }
     });
-    setTimeout(TimeLogout, timing);
+    this.activity = 0;
+    const self = this;
+    const timing = 10000;
+    setTimeout(function () {
+      console.log('Giraffe');
+      if ( self.activity === 0) {
+        const morty = self._httpService.loginPost(-1);
+        morty.subscribe(() => {
+          self._redirect.navigate(['/login']);
+        });
+      } else {
+        console.log('Addison');
+      }
+    }, timing);
     $('.camera').css('display', 'none');
     $('.newpic').on('click', function(ev) {
       ev.preventDefault();
