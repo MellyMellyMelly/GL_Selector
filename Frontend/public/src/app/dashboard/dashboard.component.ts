@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpService } from '../http.service';
-import {ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { e } from '@angular/core/src/render3';
 declare var $: any;
 declare var AOS: any;
@@ -12,16 +12,31 @@ declare var AOS: any;
 })
 export class DashboardComponent implements OnInit {
   User: object = { first_name: '', last_name: '', email: '', created: '' };
-  send: boolean;
-  constructor( private _httpService: HttpService , private _redirect: Router , private _route: ActivatedRoute ) { }
+  inputs = { send: true, component: 'dashboard', id: null };
+  activity: number;
+  constructor( private _httpService: HttpService , private _redirect: Router ) { }
 
   ngOnInit() {
+    this.activity = 0;
+    const self = this;
+    const timing = 10000;
+    function TimeLogout(check) {
+      console.log('Giraffe');
+      if (check === self.activity) {
+        const morty = self._httpService.loginPost(-1);
+        morty.subscribe(() => {
+          self._redirect.navigate(['/login']);
+        });
+      } else {
+        console.log('Addison');
+      }
+    }
     const observable = this._httpService.check();
     observable.subscribe(data => {
-      if (data['token'] === 0) {
+      if (data['token'] < 1) {
         this._redirect.navigate(['/login']);
       } else {
-        this.send = true;
+        this.inputs.id = data['token'];
         const retrieve = this._httpService.retrieve(data['token']);
         retrieve.subscribe((letter) => {
           this.User = letter;
@@ -29,6 +44,7 @@ export class DashboardComponent implements OnInit {
         });
       }
     });
+    setTimeout(TimeLogout, timing);
     $('.camera').css('display', 'none');
     $('.newpic').on('click', function(ev) {
       ev.preventDefault();
@@ -41,8 +57,25 @@ export class DashboardComponent implements OnInit {
       ev.preventDefault();
       $('.camera').fadeOut(400, function() {
         $('#main').fadeIn(400, function() {
+          console.log('Strahan');
         });
       });
+    });
+    $('.container').on('click', function() {
+      self.activity++;
+      const check = self.activity;
+      console.log('Strahan');
+      setTimeout(function () {
+        console.log('Giraffe');
+        if (check === self.activity) {
+          const morty = self._httpService.loginPost(-1);
+          morty.subscribe(() => {
+            self._redirect.navigate(['/login']);
+          });
+        } else {
+          console.log('Addison');
+        }
+      }, timing);
     });
     AOS.init();
   }

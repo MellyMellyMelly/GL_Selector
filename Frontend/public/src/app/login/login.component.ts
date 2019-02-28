@@ -14,14 +14,18 @@ export class LoginComponent implements OnInit {
   send: boolean;
   User: object = { email: '', password: '' };
   error: string;
+  message: string;
   constructor( private _httpService: HttpService, private _redirect: Router ) { }
 
   ngOnInit() {
+    this.message = '';
     this.send = true;
     const observable = this._httpService.check();
     observable.subscribe(data => {
       if (data['token'] > 0) {
         this._redirect.navigate(['/dashboard']);
+      } else {
+        this.message = data['message'];
       }
     });
     AOS.init();
@@ -59,6 +63,14 @@ export class LoginComponent implements OnInit {
         });
       } else {
         this.error = data['success'];
+        if (this.message.length > 0) {
+          this.message = '';
+          console.log('Bangladesh');
+          const giraffe = this._httpService.logout();
+          giraffe.subscribe(() => {
+            console.log('Lady Gaga');
+          });
+        }
       }
     });
   }

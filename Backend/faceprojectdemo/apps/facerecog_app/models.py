@@ -14,7 +14,7 @@ class UserManager(models.Manager):
         if not EMAIL_REGEX.match(postData['email']):
             errors["email"] = "Invalid email"
         if len(User.objects.filter(email = postData['email'])) > 0:
-            errors["email"] = "Email previously registered. Contact for information on this account 555 - 6767"
+            errors["email"] = "Email previously registered. Contact for information on this account (847) 528-1339"
         if len(postData['password']) < 8:
             errors["password"] = "Password should be at least 8 characters"
         if postData['password'] != postData['confirm']:
@@ -32,6 +32,13 @@ class UserManager(models.Manager):
         user['first_name'] = trial.first_name
         user['last_name'] = trial.last_name
         return user
+    def reset(self, id, password):
+        print(password)
+        user = User.objects.get(id=id)
+        newpass = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+        user.password = newpass
+        user.save()
+        return
 
 class FaceManager(models.Manager):
     def Jsonize(self, trial):
@@ -50,6 +57,7 @@ class User(models.Model):
     password = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    preference = models.IntegerField(default=0)
     objects = UserManager()
     def __repr__(self):
         return "<User object: {} {} {} {}>".format(self.first_name, self.last_name, self.email, self.password)

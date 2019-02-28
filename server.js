@@ -10,13 +10,18 @@ app.use(session({
     secret: 'LoginReg',
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 1800000 }
 }));
 app.get('/session', function(req,res){
+    let message = ''
     if(req.session.token === undefined){
         req.session.token = 0
     }
-    res.json({token: req.session.token})
+    else if(req.session.token === -1){
+        message = 'You have been logged out due to inactivity'
+        console.log(message)
+    }
+    console.log(req.session.token)
+    res.json({token: req.session.token, message: message})
 })
 app.post('/session', function(req,res){
     req.session.token = req.body.token;

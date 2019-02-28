@@ -25,8 +25,7 @@ export class HttpService {
   }
 
   createUser(userObj) {
-    console.log('in server createUser', userObj);
-    return this._http.post('http://localhost:8000/register', userObj);
+    return this._http.post('http://localhost:8000/preregister', userObj);
   }
 
   loginUser(userObj) {

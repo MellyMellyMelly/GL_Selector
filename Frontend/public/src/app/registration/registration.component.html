@@ -16,48 +16,48 @@
         <h1 class="font" style="color:white;">Create your account</h1>
       </div>
 
-      <form id='signup-form' class="ui form" autocomplete="off">
+      <form (submit)="createUser()" id='signup-form' class="ui form" autocomplete="off">
         <div class='many_fields'>
           <div  id="fnamediv" class="field">
             <div class="ui left icon input">
               <i class="user icon"></i>
-              <input id="fname" name="newUser.first_name" [(ngModel)]="newUser.first_name" type="text" placeholder="First Name" name="name">
+              <input id="fname" name="User.first_name" [(ngModel)]="User.first_name" type="text" placeholder="First Name" name="name">
             </div>
           </div>
           <div  id="lnamediv" class="field">
               <div class="ui left input">
-                <input id="lname" name="newUser.last_name" [(ngModel)]="newUser.last_name" type="text" placeholder="Last Name" name="name">
+                <input id="lname" name="User.last_name" [(ngModel)]="User.last_name" type="text" placeholder="Last Name" name="name">
               </div>
             </div>
           <div class="field">
             <div class="ui left icon input">
               <i class="envelope icon"></i>
-              <input type="text" name="newUser.email" [(ngModel)]="newUser.email" placeholder="Email" name="email">
+              <input type="text" name="User.email" [(ngModel)]="User.email" placeholder="Email" name="email">
             </div>
           </div>
 
           <div class="field">
             <div class="ui left icon input">
               <i class="lock icon"></i>
-              <input type="password" name="newUser.password" [(ngModel)]="newUser.password" placeholder="Password" name="password">
+              <input type="password" name="User.password" [(ngModel)]="User.password" placeholder="Password" name="password">
             </div>
           </div>
 
           <div class="field">
             <div class="ui left icon input">
               <i class="lock icon"></i>
-              <input type="password" name="newUser.confirm" [(ngModel)]="newUser.confirm" placeholder="Confirm Password" name="confirm">
+              <input type="password" name="User.confirm" [(ngModel)]="User.confirm" placeholder="Confirm Password" name="confirm">
             </div>
           </div>
 
-          <div class="ui error message"></div>
+          <!-- <div class="ui error message"></div> -->
           <div class='btns'>
             <input id="nextbutton" type="submit" value="Next" class="ui inverted blue medium button next1 ">
           </div>
 
           <p id="link" >Already have an account? <a [routerLink]="['/login']">Login Here</a></p> 
         </div>
-        <div class="ui error message"></div>
+        <!-- <div class="ui error message"></div> -->
 
       </form>
 
@@ -67,7 +67,7 @@
   </div>
 
   <div id="social">
-    <app-camera [send]="send"></app-camera>
+    <app-camera [inputs]="inputs"></app-camera>
     <div class="two ui buttons">
       <button class="ui medium button prev1">Back To Registration</button>
       <!-- <button [routerLink]="['/dashboard']" class="ui medium button submit">Use This Picture!</button> -->

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MethodCall } from '@angular/compiler';
 declare var $: any;
 declare var AOS: any;
 
@@ -13,25 +14,24 @@ export class HeadComponent implements OnInit {
   errors = null;
   face_shape = null;
   Object = Object;
-  show: boolean;
-  send: boolean;
+  inputs: any;
   res_img = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 
   constructor() { }
 
   ngOnInit() {
-    this.show = true;
-    this.send = false;
+    this.inputs = { show: true, send: false, component: 'demo' };
+    console.log('ASAP ROCKY');
     $('.body').hide();
     $('#demo').click(function () {
       console.log('Take Care');
       const rate = 700;
-      if (!this.show) {
+      if (!this.inputs.show) {
         $('.body').slideDown(rate);
       } else {
         $('.body').slideUp(rate);
       }
-      this.show = !this.show;
+      this.inputs.show = !this.inputs.show;
     });
   }
 }

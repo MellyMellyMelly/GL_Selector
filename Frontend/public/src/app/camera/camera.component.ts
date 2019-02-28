@@ -10,7 +10,10 @@ declare var AOS: any;
 })
 export class CameraComponent implements OnInit, OnDestroy {
 
-  @Input() send: boolean;
+  @Input()
+
+  inputs: object;
+  // Inputs
 
   play = false;
   src_img: string;
@@ -24,8 +27,8 @@ export class CameraComponent implements OnInit, OnDestroy {
   ngOnInit() {
     AOS.init();
     console.log('Naked ice cream');
-    console.log(this.send);
-    if (this.send === true) {
+    console.log(this.inputs);
+    if (this.inputs['send'] === true) {
       console.log('Barbershop');
     }
     console.log('Sicko Mode');
@@ -90,7 +93,6 @@ export class CameraComponent implements OnInit, OnDestroy {
       $('#keep').hide();
     });
     $('#send').on('click', function(ev) {
-      console.log('SES');
       ev.preventDefault();
       self.sendImageFromService();
     });
@@ -99,11 +101,10 @@ export class CameraComponent implements OnInit, OnDestroy {
     });
     $('.fart').modal('attach events', '#close', 'hide');
     $('.fart').on('click', () => {
-      if ((this.errors === null) && (this.send === true)) {
+      if ((this.errors === null) && (this.inputs['send'] === true)) {
         console.log('Earl');
         $('#keep').show();
       } else {
-        console.log('Verlander');
         $('#keep').hide();
       }
     });
@@ -112,7 +113,8 @@ export class CameraComponent implements OnInit, OnDestroy {
 
   sendImageFromService() {
     const newstr = this.src_img.substring(22);
-    const tempObservable = this._httpService.sendImage({demo: true, img_data: newstr});
+    const info = {demo: true, img_data: newstr, component: this.inputs['component'], email: this.inputs['User']['email']};
+    const tempObservable = this._httpService.sendImage(info);
     tempObservable.subscribe((res: any) => {
       // console.log('this is the error', res.error);
       this.res_img = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';

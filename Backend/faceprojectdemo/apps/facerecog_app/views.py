@@ -13,9 +13,9 @@ import datetime
 from django.http.response import JsonResponse
 from pathlib import Path
 
-def capture(request):
+def capture(request): # Through line 168. Analyzes pics sent to '/capture'
     body = json.loads(request.body.decode('utf-8'))
-    print(body['demo'])
+    print(body['component'])
     with open("face.jpeg", "wb") as fh:
         fh.write(base64.b64decode(body['img_data']))
     image = cv2.imread("face.jpeg")
@@ -141,8 +141,11 @@ def capture(request):
             with open('face.jpeg', "rb") as image_file:
                 encoded_string = str(base64.b64encode(image_file.read()))   
                 encoded_string=encoded_string[2:-1]
-            if(body['demo'] == False):
-                user = User.objects.get(id = session['user_id'])
+            if body['component'] == 'register' :
+                password = bcrypt.hashpw(body['password'].encode(), bcrypt.gensalt()).decode()
+                User.objects.create(first_name = body['first_name'], last_name = body['last_name'], email = body['email'], password = password)
+            if body['component'] == 'register' or body['component'] == 'dashboard' :
+                user = User.objects.get(id = body['email'])
                 Face.models.create(chin_angle = chinangle, mofa_ratio = mofa, hlmo_ratio = hairangle, shape = shape, image = encoded_string, user = user)
             context_before = {
                     "error": False,
@@ -167,46 +170,27 @@ def capture(request):
         # return requests.post('http:local:4200/', context)
         return HttpResponse(json.dumps(context_before), content_type="application/json")
 
-def retrieve(request):
-    body = json.loads(request.body.decode('utf-8'))
-    user = User.objects.get(id=body)
-    creation = str(user.created_at.strftime("%B")) + ' ' + str(user.created_at.year)
-    trial = []
-    for mug in Face.objects.filter(user=user):
-        trial.append(Face.objects.Jsonize(i))
-    context = {
-        'first_name': user.first_name,
-        'last_name':  user.last_name,
-        'email':  user.email,
-        'created': creation,
-        'faces': trial,
-    }
-    return HttpResponse(json.dumps(context), content_type="application/json")
-
-def register(request):
+def preregister(request): # Checks registration info for validity and to prevent multiple registers
     body = json.loads(request.body.decode('utf-8'))
     errors = User.objects.basic_validator(body)
     if len(errors):
         print(errors)
         return HttpResponse(json.dumps(errors), content_type="application/json")
     else:
-        if body['precheck'] == True:
-            context = {
-                'precheck': True
-            }
-            return HttpResponse(json.dumps(context), content_type="application/json")
+        context = {
+            'success': True
+        }
+        return HttpResponse(json.dumps(context), content_type="application/json")
         password = bcrypt.hashpw(body['password'].encode(), bcrypt.gensalt()).decode()
         # face = Face.objects.create()
         User.objects.create(first_name = body['first_name'], last_name = body['last_name'], email = body['email'], password = password)
         session['id'] = User.objects.get(email = body['email']).id
-        session['time'] = datetime.datetime.now()
         context = {
             'success': 'success'
         }
-        print("success")
         return HttpResponse(json.dumps(context), content_type="application/json")
         
-def login(request):
+def login(request): # Logs the user in
     body = json.loads(request.body.decode('utf-8'))
     errors = User.objects.login_validator(body)
     if len(errors):
@@ -218,3 +202,19 @@ def login(request):
                 'id': user.id,
             }
         return HttpResponse(json.dumps(context_before), content_type="application/json")
+
+def retrieve(request): # Retrieves user info after successful login
+    body = json.loads(request.body.decode('utf-8'))
+    user = User.objects.get(id=body)
+    creation = str(user.created_at.strftime("%B")) + ' ' + str(user.created_at.year)
+    facebag = []
+    for mug in Face.objects.filter(user=user):
+        facebag.append(Face.objects.Jsonize(mug))
+    context = {
+        'first_name': user.first_name,
+        'last_name':  user.last_name,
+        'email':  user.email,
+        'created': creation,
+        'faces': facebag,
+    }
+    return HttpResponse(json.dumps(context), content_type="application/json")
