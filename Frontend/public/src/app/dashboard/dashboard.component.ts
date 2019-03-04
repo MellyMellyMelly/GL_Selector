@@ -30,9 +30,10 @@ export class DashboardComponent implements OnInit {
         });
       }
     });
+    console.log(this.inputs);
     this.activity = 0;
     const self = this;
-    const timing = 10000;
+    const timing = 100000000000000000;
     setTimeout(function () {
       console.log('Giraffe');
       if ( self.activity === 0) {

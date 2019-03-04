@@ -112,8 +112,20 @@ export class CameraComponent implements OnInit, OnDestroy {
   }
 
   sendImageFromService() {
+    console.log(this.inputs['User']);
     const newstr = this.src_img.substring(22);
-    const info = {demo: true, img_data: newstr, component: this.inputs['component'], email: this.inputs['User']['email']};
+    const info = {demo: true, img_data: newstr, component: this.inputs['component']};
+    if (this.inputs['component'] === 'register') {
+      console.log('Register is the value of demo');
+      console.log(this.inputs['User']);
+      info['User'] = this.inputs['User'];
+      console.log(info['User']);
+    } else if (this.inputs['component'] === 'dashboard') {
+      console.log('Dashboard is the value of demo');
+      console.log(this.inputs['id']);
+      info['id'] = this.inputs['id'];
+      console.log(info['id']);
+    }
     const tempObservable = this._httpService.sendImage(info);
     tempObservable.subscribe((res: any) => {
       // console.log('this is the error', res.error);

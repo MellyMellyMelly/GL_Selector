@@ -22,16 +22,17 @@ export class HeadComponent implements OnInit {
   ngOnInit() {
     this.inputs = { show: true, send: false, component: 'demo' };
     console.log('ASAP ROCKY');
+    const self = this;
     $('.body').hide();
     $('#demo').click(function () {
       console.log('Take Care');
       const rate = 700;
-      if (!this.inputs.show) {
+      if (self.inputs.show) {
         $('.body').slideDown(rate);
       } else {
         $('.body').slideUp(rate);
       }
-      this.inputs.show = !this.inputs.show;
+      self.inputs.show = !self.inputs.show;
     });
   }
 }
