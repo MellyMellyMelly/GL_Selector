@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 declare var AOS: any;
+declare var $: any;
 
 @Component({
   selector: 'app-footer',
@@ -11,7 +12,9 @@ export class FooterComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    // AOS.init();
+    $('.team').click(() => {
+      console.log('Drizzy');
+    });
   }
 
 }

@@ -33,7 +33,7 @@ export class DashboardComponent implements OnInit {
     console.log(this.inputs);
     this.activity = 0;
     const self = this;
-    const timing = 100000000000000000;
+    const timing = 1800000;
     setTimeout(function () {
       console.log('Giraffe');
       if ( self.activity === 0) {
@@ -76,6 +76,9 @@ export class DashboardComponent implements OnInit {
           console.log('Addison');
         }
       }, timing);
+    });
+    $('#toggle').click(() => {
+      console.log('Riley');
     });
     AOS.init();
   }

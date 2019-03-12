@@ -21,10 +21,12 @@ export class CameraComponent implements OnInit, OnDestroy {
   face_shape = null;
   Object = Object;
   res_img: string;
+  progress: boolean;
 
   constructor(private _httpService: HttpService) { }
 
   ngOnInit() {
+    this.progress = false;
     AOS.init();
     console.log('Naked ice cream');
     console.log(this.inputs);
@@ -35,7 +37,6 @@ export class CameraComponent implements OnInit, OnDestroy {
     const self = this;
     $('#take-picture').hide();
     $('#send').hide();
-    $('#keep').hide();
     $('#cam').click(function () {
       // use MediaDevices API
       // docs: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
@@ -90,24 +91,16 @@ export class CameraComponent implements OnInit, OnDestroy {
     let canvas: any;
     $('#take-picture').on('click', function(ev) {
       ev.preventDefault();
-      $('#keep').hide();
     });
     $('#send').on('click', function(ev) {
       ev.preventDefault();
       self.sendImageFromService();
-    });
-    $('#keep').on('click', function(ev) {
-      console.log('Fairly Odd Parents');
+      $('.fart').modal('show');
+      setTimeout(() => {
+        $('.fart').modal('hide');
+      }, 180000);
     });
     $('.fart').modal('attach events', '#close', 'hide');
-    $('.fart').on('click', () => {
-      if ((this.errors === null) && (this.inputs['send'] === true)) {
-        console.log('Earl');
-        $('#keep').show();
-      } else {
-        $('#keep').hide();
-      }
-    });
     $('.fart').modal('attach events', '#send', 'show');
   }
 
@@ -138,8 +131,16 @@ export class CameraComponent implements OnInit, OnDestroy {
         this.face_shape = null;
         // console.log('there are some errors');
       } else {
+
+        this.progress = true;
         this.errors = null;
         this.face_shape = res.shape;
+        if (this.inputs['component'] === 'register') {
+            const observable = this._httpService.loginPost(res.id);
+            observable.subscribe((data: any) => {
+            console.log(data);
+          });
+        }
         // console.log('in if', res.shape);
         // console.log('no errors');
       }

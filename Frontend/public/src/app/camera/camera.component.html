@@ -21,12 +21,12 @@
         <i class="paper plane outline icon"></i>
         Analyze it!
       </button>
-      <button id='keep' class="ui labeled black icon button toggle">
-        <i class="check icon"></i>
-        Keep Pic!
-      </button>
     </div>
   </div>
+</div>
+<div class="two ui buttons">
+  <button *ngIf="progress" [routerLink]="['/dashboard']" class="ui medium button progress">Move to the Dashboard</button>
+  <!-- <button [routerLink]="['/dashboard']" class="ui medium button submit">Use This Picture!</button> -->
 </div>
 <div class="ui longer modal fart">
   <div class="header">Results</div>

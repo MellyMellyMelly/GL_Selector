@@ -3,7 +3,11 @@
     <h1 class='ui huge header'>Welcome, {{ User.first_name }}</h1>
     <div class="ui card left">
       <div class="image">
-        <img src="assets/img/zach.png">
+        <img class="current" src="assets/img/zach.png">
+        <button class="ui button" id="toggle">
+            <i class="image icon"></i>
+            Gallery!
+        </button>
       </div>
       <div class="content">
         <a class="header">{{ User.first_name }}</a>

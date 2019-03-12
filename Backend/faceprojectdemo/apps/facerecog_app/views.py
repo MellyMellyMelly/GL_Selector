@@ -150,10 +150,10 @@ def capture(request): # Through line 168. Analyzes pics sent to '/capture'
                 encoded_string = str(base64.b64encode(image_file.read()))   
                 encoded_string=encoded_string[2:-1]
             if body['component'] == 'register' :
-                if len(User.objects.filter(email=body['User']['email']))>0:
+                if len(User.objects.filter(email=body['User']['email']))==0:
                     print("created user")
                     password = body['User']['password']
-                    User.objects.create(first_name = body['User']['first_name'], last_name = body['User']['last_name'], email = body['User']['email'], password = password)
+                    request.session['user_id'] = User.objects.create(first_name = body['User']['first_name'], last_name = body['User']['last_name'], email = body['User']['email'], password = password)
                 else:
                     print("user already registered")
                     user = User.objects.get(email = body['User']['email'])
@@ -164,10 +164,13 @@ def capture(request): # Through line 168. Analyzes pics sent to '/capture'
                 user = User.objects.get(id = body['id'])
                 Face.models.create(chin_angle = chinangle, mofa_ratio = mofa, hlmo_ratio = hairangle, shape = shape, image = encoded_string, user = user)
                 print("created another face for an existing user")
+            print(request.session['user_id'])
+            print("Stttttaaaaaaaaaaaaaaannnnnnnnnnnnnnnn Smiiiiiiiiiiiiitttttttttttttthhhhhhhhhhhhhh")
             context_before = {
                     "error": False,
                     "shape": shape,
-                    "image": encoded_string
+                    "image": encoded_string,
+                    "id": request.session['user_id']
                 }
             print("No issues")
             return HttpResponse(json.dumps(context_before), content_type="application/json")
