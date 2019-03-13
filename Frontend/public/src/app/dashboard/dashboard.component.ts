@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpService } from '../http.service';
 import { Router } from '@angular/router';
 import { e } from '@angular/core/src/render3';
@@ -10,7 +10,7 @@ declare var AOS: any;
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   User: object = { first_name: '', last_name: '', email: '', created: '' };
   inputs = { send: true, component: 'dashboard', id: null };
   activity: number;
@@ -77,9 +77,8 @@ export class DashboardComponent implements OnInit {
         }
       }, timing);
     });
-    $('#toggle').click(() => {
-      console.log('Riley');
-    });
+    $('.gallery').modal('attach events', '.close', 'hide');
+    $('.gallery').modal('attach events', '#toggle', 'show');
     AOS.init();
   }
 
@@ -89,6 +88,10 @@ export class DashboardComponent implements OnInit {
       console.log(data);
       this._redirect.navigate(['/login']);
     });
+  }
+
+  ngOnDestroy() {
+    $('.gallery').remove();
   }
 
 }

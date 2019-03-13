@@ -86,3 +86,7 @@ h2 {
 #faceshape a{
     color:blue;
 }
+
+.progress {
+    height: 40px;
+}
