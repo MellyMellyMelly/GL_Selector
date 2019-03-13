@@ -28,26 +28,36 @@
               <div class="ui left input">
                 <input id="lname" name="User.last_name" [(ngModel)]="User.last_name" type="text" placeholder="Last Name" name="name">
               </div>
-            </div>
+          </div>
+          <div *ngIf="fullname" class="mistakes">
+            First name and last name have to be at least two characters and must consist of letters only
+          </div>
           <div class="field">
             <div class="ui left icon input">
               <i class="envelope icon"></i>
               <input type="text" name="User.email" [(ngModel)]="User.email" placeholder="Email" name="email">
             </div>
           </div>
-
+          <div *ngIf="email" class="mistakes" style="color: red;">
+            {{TheEmail}}
+          </div>
           <div class="field">
             <div class="ui left icon input">
               <i class="lock icon"></i>
               <input type="password" name="User.password" [(ngModel)]="User.password" placeholder="Password" name="password">
             </div>
           </div>
-
+          <div *ngIf="password" class="mistakes">
+            Password not long enough
+          </div>
           <div class="field">
             <div class="ui left icon input">
               <i class="lock icon"></i>
               <input type="password" name="User.confirm" [(ngModel)]="User.confirm" placeholder="Confirm Password" name="confirm">
             </div>
+          </div>
+          <div *ngIf="confirm" class="mistakes">
+            Passwords do not match
           </div>
 
           <!-- <div class="ui error message"></div> -->

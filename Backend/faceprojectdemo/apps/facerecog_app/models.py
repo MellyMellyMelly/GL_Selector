@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 from django.db import models
 import re
 import bcrypt
+NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 
 class UserManager(models.Manager):
@@ -9,8 +10,12 @@ class UserManager(models.Manager):
         errors = {}
         if len(postData['first_name']) < 2:
             errors["first_name"] = "First name should be at least 2 characters"
+        elif not NAME_REGEX.match(postData['first_name']):
+            errors["first_name"] = "First name should only consist of alphanumeric characters (A-Z). No periods or commas"
         if len(postData['last_name']) < 2:
             errors["last_name"] = "Last name should be at least 2 characters"
+        elif not NAME_REGEX.match(postData['last_name']):
+            errors["last_name"] = "Last name should only consist of alphanumeric characters (A-Z). No periods or commas"
         if not EMAIL_REGEX.match(postData['email']):
             errors["email"] = "Invalid email"
         if len(User.objects.filter(email = postData['email'])) > 0:

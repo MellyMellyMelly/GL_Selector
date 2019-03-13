@@ -5,6 +5,7 @@ iframe {
 #settings {
     background-color: transparent;
     color: #e0e0e0;
+    margin-left: -5px;
 }
 
 #settings:hover {

@@ -10,6 +10,11 @@ declare var $: any;
   styleUrls: ['./registration.component.css']
 })
 export class RegistrationComponent implements OnInit {
+  TheEmail: string;
+  fullname: boolean;
+  email: boolean;
+  password: boolean;
+  confirm: boolean;
   User: object = {first_name: '', last_name: '', email: '', password: '', confirm: '' };
   inputs = { send: true, component: 'register', User: null };
   constructor( private _httpService: HttpService , private _redirect: Router ) { }
@@ -21,9 +26,18 @@ export class RegistrationComponent implements OnInit {
         this._redirect.navigate(['/dashboard']);
       }
     });
+    this.fullname = false;
+    this.email = false;
+    this.password = false;
+    this.confirm = false;
     const self = this;
     let section = false;
     function action() {
+      self.TheEmail = '';
+      self.fullname = false;
+      self.email = false;
+      self.password = false;
+      self.confirm = false;
       const preregister = self._httpService.createUser(self.User);
       preregister.subscribe((info: any) => {
         console.log(info);
@@ -44,6 +58,16 @@ export class RegistrationComponent implements OnInit {
           section = true;
         } else {
           $('.next1').attr('disabled', false);
+          for (const key in info) {
+            if (key === 'first_name' || key === 'last_name') {
+              self.fullname = true;
+            } else if (key) {
+              self[key] = true;
+            }
+          }
+          if (self.email === true) {
+            self.TheEmail = info['email'];
+          }
         }
       });
     }
@@ -60,38 +84,6 @@ export class RegistrationComponent implements OnInit {
       $('#socialP').addClass('disabled');
       $('#social').transition('hide');
       $('#account').transition('fly right');
-    });
-  $('.ui.form')
-    .form({
-      fields: {
-        name: {
-          identifier: 'name',
-          rules: [
-            {
-              type   : 'empty',
-              prompt : 'Please enter your name'
-            }
-          ]
-        },
-        email: {
-          identifier: 'email',
-          rules: [
-            {
-              type   : 'empty',
-              prompt : 'Please enter your email'
-            }
-          ]
-        },
-        password: {
-          identifier: 'password',
-          rules: [
-            {
-              type: 'empty',
-              prompt: 'Please create a password'
-            }
-          ]
-        }
-      }
     });
   }
 
